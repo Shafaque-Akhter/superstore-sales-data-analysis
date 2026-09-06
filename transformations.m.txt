@@ -1,0 +1,9 @@
+let
+  Source = Csv.Document(File.Contents("C:\Users\Lenovo\Documents\SuperStore Sales DataSet.csv"), [Delimiter = ",", Columns = 23, Encoding = 65001, QuoteStyle = QuoteStyle.None]),
+  #"Promoted headers" = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+  #"Changed Type" = Table.TransformColumnTypes(#"Promoted headers",{{"Order Date", type date}, {"Ship Date", type date}, {"Row ID+O6G3A1:R6", Int64.Type}, {"Order ID", type text}, {"Ship Mode", type text}, {"Customer ID", type text}, {"Customer Name", type text}, {"Segment", type text}, {"Country", type text}, {"City", type text}, {"State", type text}, {"Region", type text}, {"Product ID", type text}, {"Category", type text}, {"Sub-Category", type text}, {"Product Name", type text}, {"Sales", type number}, {"Quantity", Int64.Type}, {"Profit", type number}, {"Returns", type text}, {"Payment Mode", type text}, {"ind1", type text}, {"ind2", type text}}),
+    #"Replaced Value" = Table.ReplaceValue(#"Changed Type","#N/A","0",Replacer.ReplaceText,{"Returns"}),
+    #"Sorted Rows" = Table.Sort(#"Replaced Value",{{"Returns", Order.Descending}}),
+    #"Removed Columns" = Table.RemoveColumns(#"Sorted Rows",{"ind1", "ind2"})
+in
+    #"Removed Columns"
